@@ -53,8 +53,12 @@ def k_gram(data, k):
 
     end = len(data)
     i = k
-    while i <= end:
-        gram = tuple(data[i-k:i])
+    while i < end:
+        gram = ''
+        for j in range(k-1, 0, -1):
+            gram += str(data[i-j][0])
+            gram += str(data[i-j][1])
+        gram = tuple(gram)
         if gram not in grams:
             grams.add(gram)
         i += 1
@@ -62,17 +66,14 @@ def k_gram(data, k):
     return grams
 
 
-file_base = './Audio_Samples/Subject_Meghan/Cat/cat'
+file_base_m = './Audio_Samples/Subject_Meghan/Cat/cat'
 
 mcat_kgrams = []
 
 for i in range(10):
-    file = file_base + str(i) + '.wav'
+    file = file_base_m + str(i) + '.wav'
     rate, data = wav.read(file)
     data = data[:-1000]
-    print(str(data))
-    print(str(type(data)))
-    print(str(type(data[0])))
     mcat_kgrams.append(k_gram(data, 3))
 
 mcat_js = []
@@ -81,6 +82,23 @@ for i in range(1, len(mcat_kgrams)):
     mcat_js.append(min_hash(60, mcat_kgrams[0], mcat_kgrams[i]))
 
 print(str(mcat_js))
+
+file_base_g = './Audio_Samples/Subject_Gradey/Cat/cat'
+
+gcat_kgrams = []
+
+for i in range(10):
+    file = file_base_g + str(i) + '.wav'
+    rate, data = wav.read(file)
+    data = data[:-1000]
+    gcat_kgrams.append(k_gram(data, 3))
+
+gcat_js = []
+
+for i in range(1, len(gcat_kgrams)):
+    gcat_js.append(min_hash(60, mcat_kgrams[0], gcat_kgrams[i]))
+
+print(str(gcat_js))
 
 
 #fft_out = np.abs(fft(data))
