@@ -65,7 +65,7 @@ def k_gram(data, k):
 
     return grams
 
-
+# Tests for Cat
 file_base_m = './Audio_Samples/Subject_Meghan/Cat/cat'
 
 mcat_kgrams = []
@@ -73,38 +73,92 @@ mcat_kgrams = []
 for i in range(10):
     file = file_base_m + str(i) + '.wav'
     rate, data = wav.read(file)
-    data = data[:-1000]
-    mcat_kgrams.append(k_gram(data, 3))
+    data = data[:-5000]
+    new_data = []
+    for dat in data:
+        if np.abs(dat[0]) > 10 or np.abs(dat[1]) > 10:
+            new_data.append(dat)
+    mcat_kgrams.append(k_gram(new_data, 100))
 
 mcat_js = []
 
 for i in range(1, len(mcat_kgrams)):
     mcat_js.append(min_hash(60, mcat_kgrams[0], mcat_kgrams[i]))
 
-print(str(mcat_js))
+print("Cat vs Cat")
+for val in mcat_js:
+    print('%.2f' % val)
 
-file_base_g = './Audio_Samples/Subject_Gradey/Cat/cat'
 
-gcat_kgrams = []
+# Tests for Hi
+file_base_m = './Audio_Samples/Subject_Meghan/Hi/hi'
+
+mhi_kgrams = []
 
 for i in range(10):
-    file = file_base_g + str(i) + '.wav'
+    file = file_base_m + str(i) + '.wav'
     rate, data = wav.read(file)
-    data = data[:-1000]
-    gcat_kgrams.append(k_gram(data, 3))
+    data = data[:-5000]
+    new_data = []
+    for dat in data:
+        if np.abs(dat[0]) > 10 or np.abs(dat[1]) > 10:
+            new_data.append(dat)
+    mhi_kgrams.append(k_gram(new_data, 100))
 
-gcat_js = []
+mhi_js = []
 
-for i in range(1, len(gcat_kgrams)):
-    gcat_js.append(min_hash(60, mcat_kgrams[0], gcat_kgrams[i]))
+for i in range(1, len(mhi_kgrams)):
+    mhi_js.append(min_hash(60, mcat_kgrams[0], mhi_kgrams[i]))
 
-print(str(gcat_js))
+print("Hi vs Cat")
+for val in mhi_js:
+    print('%.2f' % val)
+
+# file_base_g = './Audio_Samples/Subject_Gradey/Cat/cat'
+#
+# gcat_kgrams = []
+#
+# for i in range(10):
+#     file = file_base_g + str(i) + '.wav'
+#     rate, data = wav.read(file)
+#     data = data[:-5000]
+#     new_data = []
+#     for dat in data:
+#         if np.abs(dat[0]) > 10 or np.abs(dat[1]) > 10:
+#             new_data.append(dat)
+#     gcat_kgrams.append(k_gram(new_data, 3))
+#
+# gcat_js = []
+#
+# for i in range(1, len(gcat_kgrams)):
+#     gcat_js.append(min_hash(60, mcat_kgrams[0], gcat_kgrams[i]))
+#
+# print(str(gcat_js))
 
 
-#fft_out = np.abs(fft(data))
 
-#plt.plot(data, fft_out)
-
-# plt.plot(data)
-
+# file = './Audio_Samples/Subject_Meghan/Cat/cat0.wav'
+# rate, raw_data = wav.read(file)
+#
+# data = raw_data[:-5000]
+# new_data = []
+# for dat in data:
+#     if np.abs(dat[0]) > 10 or np.abs(dat[1]) > 10:
+#         new_data.append(dat)
+#
+# # fft_out = np.abs(fft(data))
+# #
+# # plt.plot(data, fft_out)
+#
+# print(len(new_data))
+# print(len(raw_data))
+#
+# plt.plot(raw_data)
+#
+# plt.plot(new_data)
+#
+# new_data = np.asarray(new_data)
+#
+# wav.write('cat_edit.wav', rate, new_data)
+#
 # plt.show()
