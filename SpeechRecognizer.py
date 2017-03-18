@@ -54,111 +54,101 @@ def k_gram(data, k):
     end = len(data)
     i = k
     while i < end:
-        gram = ''
-        for j in range(k-1, 0, -1):
-            gram += str(data[i-j][0])
-            gram += str(data[i-j][1])
-        gram = tuple(gram)
-        if gram not in grams:
-            grams.add(gram)
+        gram = tuple(data[i-k:i])
+        grams.add(gram)
         i += 1
 
     return grams
 
+
+def process_file(file):
+
+    rate, raw_data = wav.read(file)
+
+    raw_data = raw_data.T[0]
+
+    data = raw_data[:-5000]
+    new_data = []
+    for dat in data:
+        if np.abs(dat) > 10:
+            new_data.append(dat)
+
+    max_val = float(max(new_data))
+    new_data = [((val/max_val)*2)-1 for val in new_data] # Normalize the data
+
+    return new_data
+
+
+def create_wav(rate, data, name):
+
+    data = np.asarray(data)
+
+    wav.write(name, rate, data)
+
 # Tests for Cat
+
 file_base_m = './Audio_Samples/Subject_Meghan/Cat/cat'
 
 mcat_kgrams = []
 
+total = 0
+count = 0
+
 for i in range(10):
     file = file_base_m + str(i) + '.wav'
-    rate, data = wav.read(file)
-    data = data[:-5000]
-    new_data = []
-    for dat in data:
-        if np.abs(dat[0]) > 10 or np.abs(dat[1]) > 10:
-            new_data.append(dat)
-    mcat_kgrams.append(k_gram(new_data, 100))
+    new_data = process_file(file)
+    mcat_kgrams.append(k_gram(new_data, 10))
 
-mcat_js = []
+js_vals = []
 
-for i in range(1, len(mcat_kgrams)):
-    mcat_js.append(min_hash(60, mcat_kgrams[0], mcat_kgrams[i]))
+# for i in range(len(mcat_kgrams)):
+#     for j in range(i+1, len(mcat_kgrams)):
+#         js = min_hash(60, mcat_kgrams[i], mcat_kgrams[j])
+#         total += js
+#         count += 1
+#         js_vals.append(js)
+#         print('Cat' + str(i) + ' and Cat' + str(j) + ': ' + str(js))
+#
+# avg_js = total / float(count)
+# js_vals = [(avg_js - val)**2 for val in js_vals]
+# variance = sum(js_vals) / len(js_vals)
+# print('Average JS: ' + str(total / count))
+# print('Standard Deviation: ' + str(math.sqrt(variance)))
 
-print("Cat vs Cat")
-for val in mcat_js:
-    print('%.2f' % val)
 
 
-# Tests for Hi
-file_base_m = './Audio_Samples/Subject_Meghan/Hi/hi'
+file_base_m = './Audio_Samples/Subject_Gradey/Cat/cat'
 
 mhi_kgrams = []
 
+sum = 0
+count = 0
+
 for i in range(10):
     file = file_base_m + str(i) + '.wav'
-    rate, data = wav.read(file)
-    data = data[:-5000]
-    new_data = []
-    for dat in data:
-        if np.abs(dat[0]) > 10 or np.abs(dat[1]) > 10:
-            new_data.append(dat)
-    mhi_kgrams.append(k_gram(new_data, 100))
+    new_data = process_file(file)
+    mhi_kgrams.append(k_gram(new_data, 10))
 
 mhi_js = []
 
-for i in range(1, len(mhi_kgrams)):
-    mhi_js.append(min_hash(60, mcat_kgrams[0], mhi_kgrams[i]))
+for i in range(len(mhi_kgrams)):
+    for j in range(len(mcat_kgrams)):
+        js = min_hash(60, mhi_kgrams[i], mcat_kgrams[j])
+        sum += js
+        count += 1
+        print('Cat' + str(i) + ' and Hi' + str(j) + ': ' + str(js))
 
-print("Hi vs Cat")
-for val in mhi_js:
-    print('%.2f' % val)
-
-# file_base_g = './Audio_Samples/Subject_Gradey/Cat/cat'
-#
-# gcat_kgrams = []
-#
-# for i in range(10):
-#     file = file_base_g + str(i) + '.wav'
-#     rate, data = wav.read(file)
-#     data = data[:-5000]
-#     new_data = []
-#     for dat in data:
-#         if np.abs(dat[0]) > 10 or np.abs(dat[1]) > 10:
-#             new_data.append(dat)
-#     gcat_kgrams.append(k_gram(new_data, 3))
-#
-# gcat_js = []
-#
-# for i in range(1, len(gcat_kgrams)):
-#     gcat_js.append(min_hash(60, mcat_kgrams[0], gcat_kgrams[i]))
-#
-# print(str(gcat_js))
+print('Average JS: ' + str(sum/count))
 
 
 
-# file = './Audio_Samples/Subject_Meghan/Cat/cat0.wav'
-# rate, raw_data = wav.read(file)
+
+# data = process_file('./Audio_Samples/Subject_Meghan/Cat/cat0.wav')
 #
-# data = raw_data[:-5000]
-# new_data = []
-# for dat in data:
-#     if np.abs(dat[0]) > 10 or np.abs(dat[1]) > 10:
-#         new_data.append(dat)
+# fft_out = np.abs(fft(data))
 #
-# # fft_out = np.abs(fft(data))
-# #
-# # plt.plot(data, fft_out)
-#
-# print(len(new_data))
-# print(len(raw_data))
-#
-# plt.plot(raw_data)
-#
-# plt.plot(new_data)
-#
-# new_data = np.asarray(new_data)
-#
-# wav.write('cat_edit.wav', rate, new_data)
+# print(fft_out[0])
+
+# plt.plot(data, fft_out)
 #
 # plt.show()
