@@ -65,7 +65,8 @@ def k_gram(data, k):
 
     return grams
 
-
+# Process the MFCC
+# MFCC processing from: http://haythamfayek.com/2016/04/21/speech-processing-for-machine-learning.html
 def process_file(file):
 
     rate, raw_data = wav.read(file)
@@ -141,6 +142,8 @@ def process_file(file):
 
     return [tuple(x.tolist()) for x in mfcc]
 
+# Process the FFT
+# from: http://haythamfayek.com/2016/04/21/speech-processing-for-machine-learning.html
 def process_file_raw(file):
 
     rate, raw_data = wav.read(file)
